@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Book = require('../models/Book');
-const Author = require('../models/Author');
+const Book = require('../models/Book_schema');
+const Author = require('../models/Author_schema');
 
 router.post('/', async (req, res) => {
     try {
