@@ -2,8 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const port = 801;
-const booksrouter = require("./routes/books");
-const authorsrouter = require("./routes/authors");
+const booksrouter = require("./routes/books_routes");
+const authorsrouter = require("./routes/authors_routes");
 
 app.use(express.json());
 
