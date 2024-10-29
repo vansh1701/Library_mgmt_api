@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
 
 router.get('/',async(req,res)=>{
     try {
-        const authors = await Author.find().populate('books');
+        const authors = await Author.find();
         res.status(200).send(authors);
     } catch(error){
         res.status(400).send(error);
@@ -26,9 +26,9 @@ router.get('/',async(req,res)=>{
 
 router.get('/:id', async (req,res)=>{
     try {
-        const authors = await Author.findById(req.params.id);
-        if(!authors) return res.status(404).send('Author not found');
-        res.status(200).send(authors);
+        const author = await Author.findById(req.params.id);
+        if(!author) return res.status(404).send('Author not found');
+        res.status(200).send(author);
     } catch (error){
         res.status(404).send(error);
     }
@@ -37,9 +37,9 @@ router.get('/:id', async (req,res)=>{
 router.put('/:id',async(req,res)=>{
     try {
         const {author_id, name, bio, books} = req.body;
-        const authors = await Author.findByIdAndUpdate(req.params.id,{author_id, name, bio, books});
-        if(!authors) res.status(404).send(`Author not found to update`);
-        res.status(200).send(authors);
+        const author = await Author.findByIdAndUpdate(req.params.id,{author_id, name, bio, books});
+        if(!author) res.status(404).send(`Author not found to update`);
+        res.status(200).send(author);
     } catch(error){
         res.status(400).send(error);
     }
@@ -47,8 +47,8 @@ router.put('/:id',async(req,res)=>{
 
 router.delete('/:id',async(req,res)=>{
     try{
-        const authors = await Author.findByIdAndDelete(req.params.id);
-        if(!authors) res.status(400).send(`Author not found`);
+        const author = await Author.findByIdAndDelete(req.params.id);
+        if(!author) res.status(400).send(`Author not found`);
         res.status(200).send(`Deleted Succesffully`);
     } catch(error){
         res.status(400).send(error);
@@ -74,8 +74,8 @@ router.get('/:id/books', async (req, res) => {
 router.patch('/:id/books', async(req,res)=>{
     try {
         const {books} = req.body;
-        const authors = await Author.findByIdAndUpdate(req.params.id,{books});
-        if(!authors){
+        const auhtor = await Author.findByIdAndUpdate(req.params.id,{books});
+        if(!auhtor){
             return res.status(404).send(`Author not found`);
         }
         res.status(200).send(`Updated successfully`)
@@ -84,17 +84,21 @@ router.patch('/:id/books', async(req,res)=>{
     }
 })
 
-router.delete('/:id/books/:bookid', async(req,res)=>{
+router.delete('/:id/books/:bookid', async (req, res) => {
     try {
-        const authors = await Author.findById(req.params.id);
-        if(!authors) res.status(404).send(`Author not found`);
-        authors.books.pull(req.params.bookid);
-        await authors.save();
-        res.status(200).send(`success`);
-    }catch (error){
-        res.status(400).send(error);
+        const author = await Author.findById(req.params.id);
+        if (!author) return res.status(404).send('Author not found');
+
+        author.books.pull(req.params.bookid);
+        await author.save();
+
+        res.status(200).send('Book removed successfully');
+    } catch (error) {
+        res.status(500).send('Server error');
     }
-})
+});
+
+
 
 module.exports = router;
 
