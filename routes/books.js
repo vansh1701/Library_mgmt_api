@@ -57,9 +57,9 @@ router.delete('/:id',async(req,res)=>{
 
 router.get('/:id/authors', async (req,res)=>{
     try{
-        const books = await Book.findById(req.params.id);
-        if(!books) return res.status(404).send('Book not found');
-        const authors = await Author.find({_id: {$in:books.authorIds}});
+        const book = await Book.findById(req.params.id);
+        if(!book) return res.status(404).send('Book not found');
+        const authors = await Author.find({_id: {$in:book.authorIds}});
         if(!authors || authors.length===0){
             return res.status(404).send('Author not found');
         }
@@ -69,16 +69,16 @@ router.get('/:id/authors', async (req,res)=>{
     }
 })
 
-router.delete('/:id/authors/:authID', async (req, res) => {
+router.delete('/:id/authors/:author_id', async (req, res) => {
     try {
-        const books = await Book.findById(req.params.id);
-        if (!books) return res.status(404).send(`Book not found`);
-        books.authors.pull(req.params.bookId);
+        const book = await Book.findById(req.params.id);
+        if (!book) return res.status(404).send(`Book not found`);
+        book.authors.pull(req.params.author_id);
         await books.save();
 
-        const auhtors = await Author.findByIdAndDelete(req.params.authID);
-        if (!authors) return res.status(404).send(`No any author found`);
-        res.status(204).send();
+        // const auhtors = await Author.findByIdAndDelete(req.params.author_id);
+        // if (!authors) return res.status(404).send(`No any author found`);
+        // res.status(204).send();
     } catch (error) {
         res.status(400).send(error);
     }
